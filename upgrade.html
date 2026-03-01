@@ -369,7 +369,7 @@
 
   <!-- Hero -->
   <div class="hero">
-    <img src="upgrade_banner.png" alt="Business Class Cabin">
+    <img src="https://content.presspage.com/uploads/3111/40570eb0-4f0f-425d-8403-cbc805718bce/800_a350-swiss-business-mockup-1.jpg?10000" alt="SWISS Senses Business Class">
     <div class="hero-overlay">
       <h1>Upgrade Available</h1>
       <p>Your flight is eligible for a cabin upgrade</p>
@@ -388,7 +388,7 @@
           <span class="class-badge class-economy">Economy</span>
         </div>
         <div class="flight-number">LX001</div>
-        <div class="flight-operator">Operated by Swiss Airlines</div>
+        <div class="flight-operator">Operated by SWISS</div>
         <div class="route">
           <div>
             <div class="airport">ZRH</div>
@@ -423,7 +423,7 @@
 
       <div class="upgrade-option" onclick="selectUpgrade(this, 'premium_economy', 49)" id="opt-pe">
         <h3>Premium Economy</h3>
-        <div class="features">Extra legroom, premium meal, priority check-in, 2x baggage allowance</div>
+        <div class="features">Extra legroom, premium meal, priority check-in, 2 x 23 kg baggage</div>
         <div class="price-row">
           <span class="price-from">From</span>
           <span class="price">EUR 49.00</span>
@@ -433,7 +433,7 @@
       <div class="upgrade-option" onclick="selectUpgrade(this, 'business', 89)" id="opt-biz">
         <div class="recommended">Recommended</div>
         <h3>Business Class</h3>
-        <div class="features">Lie-flat seat, gourmet dining, SWISS lounge access, priority boarding, 3x baggage</div>
+        <div class="features">Lie-flat seat, gourmet dining, SWISS lounge access, priority boarding, 2 x 32 kg baggage</div>
         <div class="price-row">
           <span class="price-from">From</span>
           <span class="price">EUR 89.00</span>
@@ -442,7 +442,7 @@
 
       <div class="upgrade-option" onclick="selectUpgrade(this, 'first', 249)" id="opt-first">
         <h3>First Class</h3>
-        <div class="features">Private suite, personal chef, chauffeur service, exclusive lounge, unlimited baggage</div>
+        <div class="features">Private suite, gourmet dining, chauffeur service, exclusive lounge, 3 x 32 kg baggage</div>
         <div class="price-row">
           <span class="price-from">From</span>
           <span class="price">EUR 249.00</span>
@@ -465,7 +465,7 @@
           <span class="class-badge class-business" id="review-badge">Business</span>
         </div>
         <div class="flight-number">LX001</div>
-        <div class="flight-operator">Operated by Swiss Airlines</div>
+        <div class="flight-operator">Operated by SWISS</div>
         <div class="route">
           <div>
             <div class="airport">ZRH</div>
@@ -540,7 +540,7 @@
       <div class="confirmation-icon">&#9989;</div>
       <div class="confirmation-card">
         <h2>Upgrade Confirmed!</h2>
-        <p>Your cabin upgrade has been processed successfully. An RCS confirmation message has been sent to your phone.</p>
+        <p>Your cabin upgrade has been processed successfully. You will receive a confirmation message shortly.</p>
         <div class="confirmation-details">
           <div class="detail-row">
             <label>Flight</label>
@@ -584,8 +584,8 @@
 
     const upgradeConfig = {
       premium_economy: { label: 'Premium Economy', seat: '12A', diff: 30, baggage: '2 x 23 kg checked baggage included' },
-      business: { label: 'Business', seat: '2A', diff: 70, baggage: '3 x 32 kg checked baggage included' },
-      first: { label: 'First', seat: '1A', diff: 230, baggage: 'Unlimited baggage allowance' },
+      business: { label: 'Business', seat: '2A', diff: 70, baggage: '2 x 32 kg checked baggage included' },
+      first: { label: 'First', seat: '1A', diff: 230, baggage: '3 x 32 kg checked baggage included' },
     };
 
     function selectUpgrade(el, type, price) {
@@ -627,24 +627,21 @@
       document.getElementById('confirm-seat').textContent = cfg.seat;
       document.getElementById('confirm-total').textContent = 'EUR ' + selectedPrice.toFixed(2);
 
-      // Call the local server to trigger RCS confirmation
+      // Call backend to trigger RCS confirmation message
       fetch('/api/confirm-upgrade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           upgrade_class: selectedUpgrade,
           seat: cfg.seat,
-          total: selectedPrice,
+          total: selectedPrice.toFixed(2),
         }),
       })
-      .then(res => res.json())
-      .then(data => {
-        showStep(3);
-      })
-      .catch(() => {
-        // Still show confirmation even if RCS send fails
-        showStep(3);
-      });
+        .then(() => showStep(3))
+        .catch(() => {
+          // Graceful fallback (e.g. GitHub Pages with no backend)
+          showStep(3);
+        });
     }
 
     function showStep(n) {

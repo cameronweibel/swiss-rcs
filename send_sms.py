@@ -15,8 +15,8 @@ client = vonage.Vonage(
 
 SENDER = os.getenv("RCS_SENDER_ID")
 TO = os.getenv("TO_NUMBER")
-UPGRADE_IMAGE_URL = "https://files.catbox.moe/4h2dt5.png"
-BOOKING_URL = os.getenv("BOOKING_URL", "https://www.swiss.com")
+UPGRADE_IMAGE_URL = "https://content.presspage.com/uploads/3111/40570eb0-4f0f-425d-8403-cbc805718bce/800_a350-swiss-business-mockup-1.jpg?10000"
+BOOKING_URL = "https://cameronweibel.github.io/swiss-rcs/upgrade.html"
 
 
 def send_text(text="Hello from Vonage RCS API"):
