@@ -20,7 +20,7 @@ BOOKING_URL = "https://cameronweibel.github.io/swiss-rcs/upgrade.html"
 
 
 def send_text(text="Hello from Vonage RCS API"):
-    message = RcsText(from_=SENDER, to=TO, text=text)
+    message = RcsText(from_=SENDER, to=TO, text=text, client_ref="push_notification")
     response = client.messages.send(message)
     print(f"Text sent. UUID: {response.message_uuid}")
     return response
@@ -73,6 +73,7 @@ def send_upgrade_offer():
                 }
             }
         },
+        client_ref="push_notification",
     )
     response = client.messages.send(message)
     print(f"Upgrade offer sent. UUID: {response.message_uuid}")
@@ -91,6 +92,7 @@ def send_confirmation():
             "Total: EUR 89.00\n\n"
             "Thank you for choosing SWISS."
         ),
+        client_ref="push_notification",
     )
     response = client.messages.send(message)
     print(f"Confirmation sent. UUID: {response.message_uuid}")
