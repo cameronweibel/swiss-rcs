@@ -55,16 +55,9 @@ def send_upgrade_offer():
                                 {
                                     "action": {
                                         "text": "View Upgrade",
-                                        "postbackData": "upgrade_accept",
                                         "openUrlAction": {
                                             "url": BOOKING_URL,
                                         },
-                                    }
-                                },
-                                {
-                                    "reply": {
-                                        "text": "No thanks",
-                                        "postbackData": "upgrade_decline",
                                     }
                                 },
                             ],
@@ -85,7 +78,7 @@ def send_confirmation():
         from_=SENDER,
         to=TO,
         text=(
-            "\u2705 Upgrade Confirmed!\n\n"
+            "Upgrade Confirmed!\n\n"
             "Your Business Class upgrade for flight LX001 "
             "ZRH \u2192 JFK on June 5, 2025 has been confirmed.\n\n"
             "Seat: 2A | Terminal 1 Gate A28\n"
