@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lufthansa – Upgrade Your Flight</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1c1c1c;
+      min-height: 100vh;
+    }
+
+    /* Top Bar */
+    .topbar {
+      background: #05164d;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar .logo img {
+      width: 120px;
+      height: auto;
+      filter: brightness(0) invert(1);
+    }
+    .topbar .booking-ref {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+    }
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px;
+      background: linear-gradient(transparent, rgba(5,22,77,0.75));
+      color: #fff;
+    }
+    .hero-overlay h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .hero-overlay p {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    /* Flight Card */
+    .flight-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .flight-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .flight-date { font-size: 13px; color: #555; }
+    .class-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 3px;
+      color: #fff;
+    }
+    .class-economy { background: #6b7280; }
+    .class-business { background: #05164d; }
+    .flight-number {
+      font-size: 12px;
+      color: #05164d;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .flight-operator {
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 12px;
+    }
+    .route {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .route .airport {
+      font-size: 28px;
+      font-weight: 700;
+      color: #05164d;
+    }
+    .route .city {
+      font-size: 12px;
+      color: #777;
+    }
+    .route-middle {
+      text-align: center;
+      flex: 1;
+      padding: 0 12px;
+    }
+    .route-middle .plane {
+      font-size: 18px;
+      color: #999;
+    }
+    .route-middle .duration {
+      font-size: 11px;
+      color: #999;
+    }
+    .schedule {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+    .schedule-item label {
+      font-size: 11px;
+      color: #999;
+      display: block;
+    }
+    .schedule-item span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Upgrade Options */
+    .upgrade-option {
+      background: #fff;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .upgrade-option:hover { border-color: #05164d; }
+    .upgrade-option.selected { border-color: #05164d; background: #f0f3fa; }
+    .upgrade-option .recommended {
+      background: #f9ba00;
+      color: #05164d;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .upgrade-option h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .upgrade-option .features {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .upgrade-option .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .upgrade-option .price-from {
+      font-size: 12px;
+      color: #777;
+    }
+    .upgrade-option .price {
+      font-size: 22px;
+      font-weight: 700;
+      color: #05164d;
+    }
+
+    /* Price Overview */
+    .price-overview {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .price-overview h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 6px 0;
+      color: #555;
+    }
+    .price-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 700;
+      padding-top: 12px;
+      margin-top: 8px;
+      border-top: 1px solid #ddd;
+    }
+    .info-box {
+      background: #eef2fa;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 12px;
+      color: #05164d;
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .info-box .icon { font-size: 16px; }
+
+    /* Tariff Summary */
+    .tariff {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .tariff h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+    .tariff ul { padding-left: 18px; font-size: 13px; color: #555; line-height: 1.8; }
+
+    /* Buttons */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #05164d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #0a2370; }
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #f9ba00;
+      color: #05164d;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: #e5aa00; }
+    .btn-ghost {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: #05164d;
+      border: 1px solid #05164d;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* Confirmation */
+    .confirmation-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+      margin-top: 20px;
+    }
+    .confirmation-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #05164d;
+    }
+    .confirmation-card p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    .confirmation-details {
+      text-align: left;
+      border-top: 1px solid #eee;
+      padding-top: 16px;
+    }
+    .confirmation-details .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .confirmation-details .detail-row label { color: #777; }
+    .confirmation-details .detail-row span { font-weight: 600; }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="logo">
+      <img src="lufthansa-logo.svg" alt="Lufthansa">
+    </div>
+    <div class="booking-ref">Ref: LH-2025-6391</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <img src="https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2022/10/lufthansa-business-class-2.jpg?resize=678%2C381&ssl=1" alt="Lufthansa Allegris Business Class">
+    <div class="hero-overlay">
+      <h1>Upgrade Available</h1>
+      <p>Your flight is eligible for a cabin upgrade</p>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- STEP 1: Current Flight + Upgrade Options -->
+    <div class="step active" id="step1">
+
+      <p class="section-title">Your current flight</p>
+      <div class="flight-card">
+        <div class="flight-card-header">
+          <span class="flight-date">June 12, 2025</span>
+          <span class="class-badge class-economy">Economy</span>
+        </div>
+        <div class="flight-number">LH400</div>
+        <div class="flight-operator">Operated by Lufthansa</div>
+        <div class="route">
+          <div>
+            <div class="airport">FRA</div>
+            <div class="city">Frankfurt</div>
+          </div>
+          <div class="route-middle">
+            <div class="plane">&#9992;</div>
+            <div class="duration">8h 30m</div>
+          </div>
+          <div style="text-align:right">
+            <div class="airport">JFK</div>
+            <div class="city">New York</div>
+          </div>
+        </div>
+        <div class="schedule">
+          <div class="schedule-item">
+            <label>Departure</label>
+            <span>10:30</span>
+          </div>
+          <div class="schedule-item">
+            <label>Arrival</label>
+            <span>13:00</span>
+          </div>
+          <div class="schedule-item">
+            <label>Seat</label>
+            <span>42F</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-title">Choose your upgrade</p>
+
+      <div class="upgrade-option" onclick="selectUpgrade(this, 'premium_economy', 59)" id="opt-pe">
+        <h3>Premium Economy</h3>
+        <div class="features">Extra legroom, premium meal, priority check-in, 2 x 23 kg baggage</div>
+        <div class="price-row">
+          <span class="price-from">From</span>
+          <span class="price">EUR 59.00</span>
+        </div>
+      </div>
+
+      <div class="upgrade-option" onclick="selectUpgrade(this, 'business', 99)" id="opt-biz">
+        <div class="recommended">Recommended</div>
+        <h3>Business Class Allegris</h3>
+        <div class="features">Allegris suite with sliding door, lie-flat bed, gourmet dining, Lufthansa lounge access, priority boarding, 2 x 32 kg baggage</div>
+        <div class="price-row">
+          <span class="price-from">From</span>
+          <span class="price">EUR 99.00</span>
+        </div>
+      </div>
+
+      <div class="upgrade-option" onclick="selectUpgrade(this, 'first', 279)" id="opt-first">
+        <h3>First Class</h3>
+        <div class="features">Private suite, personal assistant, gourmet dining, First Class Terminal access, limousine service, 3 x 32 kg baggage</div>
+        <div class="price-row">
+          <span class="price-from">From</span>
+          <span class="price">EUR 279.00</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btn-continue" onclick="goToReview()" disabled style="opacity:0.5">
+        Continue
+      </button>
+      <button class="btn-ghost" onclick="window.close()">No thanks</button>
+    </div>
+
+    <!-- STEP 2: Review & Confirm -->
+    <div class="step" id="step2">
+      <p class="section-title">Review your upgrade</p>
+
+      <div class="flight-card">
+        <div class="flight-card-header">
+          <span class="flight-date">June 12, 2025</span>
+          <span class="class-badge class-business" id="review-badge">Business</span>
+        </div>
+        <div class="flight-number">LH400</div>
+        <div class="flight-operator">Operated by Lufthansa</div>
+        <div class="route">
+          <div>
+            <div class="airport">FRA</div>
+            <div class="city">Frankfurt</div>
+          </div>
+          <div class="route-middle">
+            <div class="plane">&#9992;</div>
+            <div class="duration">8h 30m</div>
+          </div>
+          <div style="text-align:right">
+            <div class="airport">JFK</div>
+            <div class="city">New York</div>
+          </div>
+        </div>
+        <div class="schedule">
+          <div class="schedule-item">
+            <label>Departure</label>
+            <span>10:30</span>
+          </div>
+          <div class="schedule-item">
+            <label>Arrival</label>
+            <span>13:00</span>
+          </div>
+          <div class="schedule-item">
+            <label>New Seat</label>
+            <span id="review-seat">3A</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="price-overview">
+        <h3>Price overview</h3>
+        <div class="price-line">
+          <span>Flight price difference</span>
+          <span id="review-diff">78.00</span>
+        </div>
+        <div class="price-line">
+          <span>Rebooking fee</span>
+          <span>12.00</span>
+        </div>
+        <div class="price-line">
+          <span>Taxes, fees and surcharges</span>
+          <span>9.00</span>
+        </div>
+        <div class="price-total">
+          <span>Total</span>
+          <span id="review-total">EUR 99.00</span>
+        </div>
+        <div class="info-box">
+          <span class="icon">&#9432;</span>
+          <span>Total prices will be calculated in the next step prior to confirming your rebooking.</span>
+        </div>
+      </div>
+
+      <div class="tariff">
+        <h3>Tariff summary</h3>
+        <ul>
+          <li>Rebooking for a fee plus the tariff difference</li>
+          <li>Refund not possible</li>
+          <li id="tariff-baggage">2 x 23 kg checked baggage included</li>
+        </ul>
+      </div>
+
+      <button class="btn-primary" onclick="confirmUpgrade()">
+        Confirm Upgrade
+      </button>
+      <button class="btn-ghost" onclick="goBack()">Back</button>
+    </div>
+
+    <!-- STEP 3: Confirmation -->
+    <div class="step" id="step3">
+      <div class="confirmation-card">
+        <h2>Upgrade Confirmed!</h2>
+        <p>Your cabin upgrade has been processed successfully. You will receive a confirmation message shortly.</p>
+        <div class="confirmation-details">
+          <div class="detail-row">
+            <label>Flight</label>
+            <span>LH400</span>
+          </div>
+          <div class="detail-row">
+            <label>Route</label>
+            <span>FRA &#8594; JFK</span>
+          </div>
+          <div class="detail-row">
+            <label>Date</label>
+            <span>June 12, 2025</span>
+          </div>
+          <div class="detail-row">
+            <label>New Class</label>
+            <span id="confirm-class">Business</span>
+          </div>
+          <div class="detail-row">
+            <label>New Seat</label>
+            <span id="confirm-seat">3A</span>
+          </div>
+          <div class="detail-row">
+            <label>Total Charged</label>
+            <span id="confirm-total">EUR 99.00</span>
+          </div>
+          <div class="detail-row">
+            <label>Booking Ref</label>
+            <span>LH-2025-6391</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="window.location.href='https://www.lufthansa.com'">
+        Go to Lufthansa.com
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let selectedUpgrade = null;
+    let selectedPrice = 0;
+
+    const upgradeConfig = {
+      premium_economy: { label: 'Premium Economy', seat: '15A', diff: 38, baggage: '2 x 23 kg checked baggage included' },
+      business: { label: 'Business Allegris', seat: '3A', diff: 78, baggage: '2 x 32 kg checked baggage included' },
+      first: { label: 'First', seat: '1A', diff: 258, baggage: '3 x 32 kg checked baggage included' },
+    };
+
+    function selectUpgrade(el, type, price) {
+      document.querySelectorAll('.upgrade-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedUpgrade = type;
+      selectedPrice = price;
+      const btn = document.getElementById('btn-continue');
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
+
+    function goToReview() {
+      if (!selectedUpgrade) return;
+      const cfg = upgradeConfig[selectedUpgrade];
+
+      document.getElementById('review-badge').textContent = cfg.label;
+      document.getElementById('review-badge').className = 'class-badge ' +
+        (selectedUpgrade === 'first' ? 'class-business' : selectedUpgrade === 'business' ? 'class-business' : 'class-economy');
+      document.getElementById('review-seat').textContent = cfg.seat;
+      document.getElementById('review-diff').textContent = cfg.diff.toFixed(2);
+      document.getElementById('review-total').textContent = 'EUR ' + selectedPrice.toFixed(2);
+      document.getElementById('tariff-baggage').textContent = cfg.baggage;
+
+      showStep(2);
+    }
+
+    function goBack() {
+      showStep(1);
+    }
+
+    function confirmUpgrade() {
+      const btn = event.target;
+      btn.innerHTML = '<span class="spinner"></span>Processing...';
+      btn.disabled = true;
+
+      const cfg = upgradeConfig[selectedUpgrade];
+      document.getElementById('confirm-class').textContent = cfg.label;
+      document.getElementById('confirm-seat').textContent = cfg.seat;
+      document.getElementById('confirm-total').textContent = 'EUR ' + selectedPrice.toFixed(2);
+
+      // Call backend to trigger RCS confirmation message
+      fetch('/api/confirm-upgrade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          upgrade_class: selectedUpgrade,
+          seat: cfg.seat,
+          total: selectedPrice.toFixed(2),
+        }),
+      })
+        .then(() => showStep(3))
+        .catch(() => {
+          // Graceful fallback (e.g. GitHub Pages with no backend)
+          showStep(3);
+        });
+    }
+
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // Pre-select Business Class (recommended)
+    document.getElementById('opt-biz').click();
+  </script>
+</body>
+</html>

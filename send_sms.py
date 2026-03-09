@@ -15,8 +15,8 @@ client = vonage.Vonage(
 
 SENDER = os.getenv("RCS_SENDER_ID")
 TO = os.getenv("TO_NUMBER")
-UPGRADE_IMAGE_URL = "https://content.presspage.com/uploads/3111/40570eb0-4f0f-425d-8403-cbc805718bce/800_a350-swiss-business-mockup-1.jpg?10000"
-BOOKING_URL = "https://cameronweibel.github.io/swiss-rcs/upgrade.html"
+UPGRADE_IMAGE_URL = "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2022/10/lufthansa-business-class-2.jpg?resize=678%2C381&ssl=1"
+BOOKING_URL = "https://cameronweibel.github.io/swiss-rcs/upgrade-lh.html"
 
 
 def send_text(text="Hello from Vonage RCS API"):
@@ -37,12 +37,12 @@ def send_upgrade_offer():
                         "cardOrientation": "VERTICAL",
                         "thumbnailImageAlignment": "LEFT",
                         "cardContent": {
-                            "title": "Upgrade to Business Class",
+                            "title": "Upgrade to Business Class Allegris",
                             "description": (
                                 "Good news! A Business Class upgrade is available "
-                                "for your upcoming ZRH \u2192 JFK flight on June 5. "
-                                "Enjoy lie-flat seats, premium dining, and priority boarding "
-                                "from just EUR 89.00."
+                                "for your upcoming FRA \u2192 JFK flight on June 12. "
+                                "Enjoy the Allegris suite with sliding door, gourmet dining, "
+                                "and Lufthansa lounge access from just EUR 99.00."
                             ),
                             "media": {
                                 "height": "TALL",
@@ -55,6 +55,7 @@ def send_upgrade_offer():
                                 {
                                     "action": {
                                         "text": "View Upgrade",
+                                        "postbackData": "ignore",
                                         "openUrlAction": {
                                             "url": BOOKING_URL,
                                         },
@@ -79,11 +80,11 @@ def send_confirmation():
         to=TO,
         text=(
             "Upgrade Confirmed!\n\n"
-            "Your Business Class upgrade for flight LX001 "
-            "ZRH \u2192 JFK on June 5, 2025 has been confirmed.\n\n"
-            "Seat: 2A | Terminal 1 Gate A28\n"
-            "Total: EUR 89.00\n\n"
-            "Thank you for choosing SWISS."
+            "Your Business Class Allegris upgrade for flight LH400 "
+            "FRA \u2192 JFK on June 12, 2025 has been confirmed.\n\n"
+            "Seat: 3A | Terminal 1 Gate B22\n"
+            "Total: EUR 99.00\n\n"
+            "Thank you for choosing Lufthansa."
         ),
         client_ref="push_notification",
     )
